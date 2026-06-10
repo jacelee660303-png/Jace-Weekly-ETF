@@ -1,0 +1,37 @@
+name: Nasdaq Signal (nasdaq/)
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'   # 일요일 09:00 KST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repo-push
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 패키지 설치
+        run: pip install yfinance pytz
+      - name: 리포트 생성
+        working-directory: nasdaq
+        run: python generate_report.py
+      - name: 커밋 & 푸시
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add nasdaq/index.html
+          if git diff --staged --quiet; then echo "변경 없음"; else
+            git pull --rebase
+            git commit -m "nasdaq: $(TZ='Asia/Seoul' date '+%Y-%m-%d %H:%M KST') 자동 업데이트"
+            git push
+          fi
