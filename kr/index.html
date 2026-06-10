@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KR 한국 ETF Weekly</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f4f0;--card:#fff;--bd:rgba(0,0,0,0.09);--tx:#1a1a1a;--t2:#666;--t3:#999;--acc:#1e40af;--mono:'SF Mono','Courier New',monospace}
+body{font-family:-apple-system,'Segoe UI','Malgun Gothic',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding:28px 22px}
+.wrap{max-width:1040px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bd)}
+.hdr h1{font-size:20px;font-weight:600}.hdr p{font-size:12px;color:var(--t2);font-family:var(--mono);margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-family:var(--mono)}
+.b-live{background:#dcfce7;color:#16a34a}.b-load{background:#fef9c3;color:#ca8a04}.b-err{background:#fee2e2;color:#dc2626}
+.info-bar{display:flex;justify-content:space-between;padding:8px 13px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;font-size:12px;color:var(--acc);margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.upd-bar{display:flex;justify-content:space-between;padding:8px 13px;background:#f3f4f6;border-radius:7px;font-size:11px;color:var(--t2);font-family:var(--mono);margin-bottom:14px}
+.summary-row{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:16px}
+.scard{background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:10px 12px;border-top:3px solid #ddd;position:relative}
+.scard-name{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scard-code{font-size:9px;color:var(--t3);font-family:var(--mono);margin-bottom:3px}
+.scard-4w{font-size:18px;font-weight:700;font-family:var(--mono)}
+.scard-rows{margin-top:4px;display:flex;flex-direction:column;gap:1px}
+.scard-row{font-size:10px;color:var(--t3);display:flex;justify-content:space-between}
+.scard-row span:last-child{font-weight:600}
+.tag-new{position:absolute;top:8px;right:8px;font-size:8px;font-weight:700;color:#b45309;background:#fef3c7;padding:1px 5px;border-radius:8px;font-family:var(--mono)}
+.ch-card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-bottom:14px}
+.ch-title{font-size:12px;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ch-badge{padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700}
+.main-badge{background:var(--acc);color:#fff}.ref-badge{background:#f3f4f6;color:var(--t2)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--t2);margin-top:10px}
+.tbl-wrap{background:var(--card);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{padding:8px 8px;font-size:10px;color:var(--t3);font-weight:500;background:#fafaf8;border-bottom:1px solid var(--bd);text-align:left}
+th.r{text-align:right}th.key{color:var(--acc);font-weight:700;font-size:11px}
+td{padding:9px 8px;font-size:12px;border-bottom:1px solid #f0f0ec}
+td.r{text-align:right;font-family:var(--mono);font-size:12px;font-weight:600}
+td.key{background:#eff6ff}
+tr:last-child td{border-bottom:none}tr:hover td{background:#fafaf8}tr:hover td.key{background:#dbeafe}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;font-size:10px;font-family:var(--mono);font-weight:700;background:#f0f0ec;color:var(--t2)}
+.r1{background:#fef3c7;color:#92400e}.r2{background:#f3f4f6;color:#4b5563}.r3{background:#fde8d8;color:#7c2d12}
+#loadBox{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:50px 20px;text-align:center;color:var(--t2)}
+.spin{width:28px;height:28px;border:2.5px solid #e5e7eb;border-top-color:var(--acc);border-radius:50%;animation:rot .8s linear infinite;margin:0 auto 12px}
+@keyframes rot{to{transform:rotate(360deg)}}
+footer{font-size:10px;color:var(--t3);text-align:center;line-height:1.8;padding-top:4px}
+@media(max-width:760px){.summary-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div><h1>KR 한국 ETF Weekly</h1><p id="period">불러오는 중...</p></div>
+    <div><span class="badge b-load" id="badge">● Loading</span></div>
+  </div>
+  <div class="info-bar">
+    <span>📊 <span id="univ">ETF</span> | KRW | 네이버 일봉</span>
+    <span style="color:var(--t2)"><strong>N주 = 지난 5×N 영업일</strong> · 매일 한국 장 마감 후 자동 업데이트</span>
+  </div>
+  <div class="upd-bar" id="updBar" style="display:none"><span id="nextTxt"></span><span id="lastTxt"></span></div>
+  <div id="loadBox"><div class="spin"></div><div style="font-size:13px">데이터 로딩 중...</div></div>
+  <div id="dash" style="display:none">
+    <div class="summary-row" id="summaryRow"></div>
+    <div class="ch-card">
+      <div class="ch-title">
+        <span class="ch-badge main-badge">MAIN</span>
+        <strong>모멘텀 지수</strong> 순 정렬 · 막대 위 숫자 = 모멘텀 지수 · 막대 = 2/4/6/8/10주 (10/20/30/40/50영업일)
+        <span style="color:var(--t3);font-size:11px" id="mainPeriod"></span>
+        <div style="margin-left:auto;display:flex;gap:9px;font-size:11px;color:var(--t2)">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.4;margin-right:3px;vertical-align:middle;border-radius:2px"></span>2주</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#555;border:2px solid #333;margin-right:3px;vertical-align:middle;border-radius:2px"></span>4주★</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.65;margin-right:3px;vertical-align:middle;border-radius:2px"></span>6주</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.5;margin-right:3px;vertical-align:middle;border-radius:2px"></span>8주</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.35;margin-right:3px;vertical-align:middle;border-radius:2px"></span>10주</span>
+        </div>
+      </div>
+      <div style="position:relative;height:300px"><canvas id="chartMain"></canvas></div>
+    </div>
+    <div class="ch-card">
+      <div class="ch-title">
+        <span class="ch-badge" style="background:#0f766e;color:#fff">추이</span>
+        <strong>10주 환산 페이스</strong> (가속·감속) · 각 구간(5×N 영업일)을 10주 속도로 환산 · 왼쪽(단기)이 높으면 가속, 낮으면 감속
+        <div style="margin-left:auto;display:flex;gap:9px;font-size:11px;color:var(--t2)">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.4;margin-right:3px;vertical-align:middle;border-radius:2px"></span>2주×5</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#555;border:2px solid #333;margin-right:3px;vertical-align:middle;border-radius:2px"></span>4주×2.5</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.65;margin-right:3px;vertical-align:middle;border-radius:2px"></span>6주×1.7</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.5;margin-right:3px;vertical-align:middle;border-radius:2px"></span>8주×1.25</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.35;margin-right:3px;vertical-align:middle;border-radius:2px"></span>10주×1</span>
+        </div>
+      </div>
+      <div style="position:relative;height:300px"><canvas id="chartWeighted"></canvas></div>
+    </div>
+    <div class="ch-card">
+      <div class="ch-title">
+        <span class="ch-badge" style="background:#0e7490;color:#fff">추이7</span>
+        <strong>7주 환산 페이스</strong> · 각 N주 구간 = 지난 5×N 영업일 (최신 종가 포함) · 7주 속도로 환산
+        <div style="margin-left:auto;display:flex;gap:7px;font-size:11px;color:var(--t2);flex-wrap:wrap">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#777;opacity:.95;margin-right:3px;vertical-align:middle;border-radius:2px"></span>1주×7</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#888;opacity:.8;margin-right:3px;vertical-align:middle;border-radius:2px"></span>2주×3.5</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#999;opacity:.66;margin-right:3px;vertical-align:middle;border-radius:2px"></span>3주×2.3</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.53;margin-right:3px;vertical-align:middle;border-radius:2px"></span>4주×1.75</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.4;margin-right:3px;vertical-align:middle;border-radius:2px"></span>5·6·7주</span>
+        </div>
+      </div>
+      <div style="position:relative;height:300px"><canvas id="chartPace7"></canvas></div>
+    </div>
+    <div class="ch-card">
+      <div class="ch-title">
+        <span class="ch-badge ref-badge">TREND</span>
+        10주(50영업일) 상대성과 · 일별
+        <span style="color:var(--t3);font-size:11px">표시 시작 = 100 · 모멘텀 상위 6 실선 / 하위 6 얇은 점선</span>
+      </div>
+      <div style="position:relative;height:260px"><canvas id="chartTrend"></canvas></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="tbl-wrap"><table id="tbl"></table></div>
+  </div>
+  <footer id="foot"></footer>
+</div>
+<script>
+const charts={};
+const PERIODS=[2,4,6,8,10];
+const fmt=r=>(r==null||isNaN(r))?'–':(r>=0?'+':'')+parseFloat(r).toFixed(1)+'%';
+const won=n=>(n==null||isNaN(n))?'–':'₩'+Math.round(n).toLocaleString('ko-KR');
+const fmtD=d=>`${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+const cc=v=>(v==null||isNaN(v))?'#9ca3af':(v>=0?'#16a34a':'#dc2626');
+const setBadge=(cls,t)=>{const b=document.getElementById('badge');b.className='badge '+cls;b.textContent='● '+t;};
+function nextBizDay(){const d=new Date();do{d.setDate(d.getDate()+1);}while(d.getDay()===0||d.getDay()===6);d.setHours(16,30,0,0);return d;}
+const r4=e=>e.r4;
+// ── 모멘텀 지수: (2주·5+4주·4+6주·3+8주·2+10주·1)/가중치합, 자료 3개 이상만 ──
+const PW=[['r2',5],['r4',4],['r6',3],['r8',2],['r10',1]];
+function momentum(e){
+  const av=PW.filter(p=>e[p[0]]!=null);
+  if(av.length<3) return null;                         // 3개 미만 → 산출 안함
+  const num=av.reduce((s,p)=>s+e[p[0]]*p[1],0);
+  const den=av.reduce((s,p)=>s+p[1],0);                // 보유 자료 수만큼 가중
+  return Math.round(num/den*10)/10;
+}
+const momFmt=m=>(m==null)?'–':(m>=0?'+':'')+m.toFixed(1);
+// 막대 위에 모멘텀 지수 표시
+const momTopPlugin={id:'momTop',afterDatasetsDraw(chart,args,opts){
+  const vals=opts&&opts.values; if(!vals)return;
+  const {ctx,chartArea:{top},scales:{x}}=chart;
+  ctx.save();
+  ctx.font='700 11px -apple-system,"Malgun Gothic",sans-serif';
+  ctx.textAlign='center';
+  vals.forEach((m,i)=>{ctx.fillStyle=(m==null)?'#9ca3af':(m>=0?'#16a34a':'#dc2626');
+    ctx.fillText(momFmt(m), x.getPixelForValue(i), top-8);});
+  ctx.restore();
+}};
+function render(d){
+  // 정렬: 모멘텀 지수 내림차순 (모멘텀 없는 종목은 맨 오른쪽, 그들끼리는 4주순)
+  const withMom=d.etfs.map(e=>({...e,mom:momentum(e)}));
+  const sorted=withMom.sort((a,b)=>{
+    if(a.mom==null&&b.mom==null){const x=r4(a),y=r4(b);return (y==null?-1e9:y)-(x==null?-1e9:x);}
+    if(a.mom==null)return 1; if(b.mom==null)return -1; return b.mom-a.mom;});
+  document.getElementById('period').textContent=`KRW 기준 · 기준일: ${d.date} (네이버 종가) · N주 = 지난 5×N 영업일`;
+  document.getElementById('univ').textContent=`TIME·KoAct·KODEX·TIGER ${d.count}종`;
+  document.getElementById('mainPeriod').textContent=`기준일: ${d.date}`;
+  document.getElementById('updBar').style.display='flex';
+  document.getElementById('nextTxt').textContent='Next: '+fmtD(nextBizDay())+' 16:30 KST (GitHub Actions)';
+  document.getElementById('lastTxt').textContent='Data: '+d.date+(d.generated_at?' · Gen: '+d.generated_at+' KST':'');
+
+  // 요약 카드 (대표=모멘텀 지수, 보조=2/4/6/8/10주)
+  document.getElementById('summaryRow').innerHTML=sorted.map(e=>`
+    <div class="scard" style="border-top-color:${e.color}">
+      ${e.new?'<span class="tag-new">NEW</span>':''}
+      <div class="scard-name" title="${e.name}">${e.short}</div>
+      <div class="scard-code">${e.code}${e.mom==null?' · 자료 '+e.weeks+'주':''}</div>
+      <div style="font-size:8px;color:var(--t3);font-family:var(--mono);letter-spacing:.4px;margin-top:2px">모멘텀 지수</div>
+      <div class="scard-4w" style="color:${cc(e.mom)};line-height:1.05">${momFmt(e.mom)}</div>
+      <div class="scard-rows" style="margin-top:5px">
+        <div class="scard-row"><span>2주</span><span style="color:${cc(e.r2)}">${fmt(e.r2)}</span></div>
+        <div class="scard-row"><span>4주</span><span style="color:${cc(e.r4)}">${fmt(e.r4)}</span></div>
+        <div class="scard-row"><span>6주</span><span style="color:${cc(e.r6)}">${fmt(e.r6)}</span></div>
+        <div class="scard-row"><span>8주</span><span style="color:${cc(e.r8)}">${fmt(e.r8)}</span></div>
+        <div class="scard-row"><span>10주</span><span style="color:${cc(e.r10)}">${fmt(e.r10)}</span></div>
+      </div>
+    </div>`).join('');
+
+  // MAIN 막대 (2/4/6/8/10주 = 10/20/30/40/50영업일, 4주 강조)
+  const clr=sorted.map(e=>e.color);
+  const ds=(wk,style)=>({label:wk+'주',data:sorted.map(e=>e['r'+wk]),...style});
+  if(charts.main)charts.main.destroy();
+  charts.main=new Chart(document.getElementById('chartMain'),{type:'bar',plugins:[momTopPlugin],
+    data:{labels:sorted.map(e=>e.short),datasets:[
+      ds(2 ,{backgroundColor:clr.map(c=>c+'40'),borderColor:clr.map(c=>c+'77'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(4 ,{backgroundColor:clr.map(c=>c+'ee'),borderColor:clr,borderWidth:2,borderRadius:4,borderSkipped:false}),
+      ds(6 ,{backgroundColor:clr.map(c=>c+'99'),borderColor:clr.map(c=>c+'bb'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(8 ,{backgroundColor:clr.map(c=>c+'66'),borderColor:clr.map(c=>c+'99'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(10,{backgroundColor:clr.map(c=>c+'44'),borderColor:clr.map(c=>c+'77'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      layout:{padding:{top:24}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}(${parseInt(c.dataset.label)*5}영업일): ${fmt(c.raw)}`}},momTop:{values:sorted.map(e=>e.mom)}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},callback:v=>v+'%'}}}}
+  });
+
+  // 10주 환산 페이스 (추이): 각 구간 수익률 × (10/구간) → 10주 속도로 정규화
+  const NF={2:5,4:2.5,6:10/6,8:1.25,10:1};
+  const lbl={2:'2주×5',4:'4주×2.5',6:'6주×1.7',8:'8주×1.25',10:'10주×1'};
+  const dsP=(wk,style)=>({label:lbl[wk],data:sorted.map(e=>e['r'+wk]!=null?+(e['r'+wk]*NF[wk]).toFixed(1):null),...style});
+  if(charts.weighted)charts.weighted.destroy();
+  charts.weighted=new Chart(document.getElementById('chartWeighted'),{type:'bar',
+    data:{labels:sorted.map(e=>e.short),datasets:[
+      dsP(2 ,{backgroundColor:clr.map(c=>c+'40'),borderColor:clr.map(c=>c+'77'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP(4 ,{backgroundColor:clr.map(c=>c+'ee'),borderColor:clr,borderWidth:2,borderRadius:4,borderSkipped:false}),
+      dsP(6 ,{backgroundColor:clr.map(c=>c+'99'),borderColor:clr.map(c=>c+'bb'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP(8 ,{backgroundColor:clr.map(c=>c+'66'),borderColor:clr.map(c=>c+'99'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP(10,{backgroundColor:clr.map(c=>c+'44'),borderColor:clr.map(c=>c+'77'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)} (10주환산)`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},callback:v=>v+'%'}}}}
+  });
+
+  // 7주 환산 페이스: 일별 시리즈(trend)에서 N주(=5×N 영업일) 수익률 × (7/N). 최신 종가 포함
+  const dsP7=(n,style)=>({label:n+'주',data:sorted.map(e=>{const T=e.trend.map(p=>p.idx);
+      const k=5*n; if(T.length<k+1)return null; const r=(T[T.length-1]/T[T.length-1-k]-1)*100; return +(r*(7/n)).toFixed(1);}),...style});
+  if(charts.pace7)charts.pace7.destroy();
+  charts.pace7=new Chart(document.getElementById('chartPace7'),{type:'bar',
+    data:{labels:sorted.map(e=>e.short),datasets:[
+      dsP7(1,{backgroundColor:clr.map(c=>c+'ee'),borderColor:clr,borderWidth:2,borderRadius:4,borderSkipped:false}),
+      dsP7(2,{backgroundColor:clr.map(c=>c+'cc'),borderColor:clr.map(c=>c+'dd'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(3,{backgroundColor:clr.map(c=>c+'aa'),borderColor:clr.map(c=>c+'bb'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(4,{backgroundColor:clr.map(c=>c+'88'),borderColor:clr.map(c=>c+'99'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(5,{backgroundColor:clr.map(c=>c+'66'),borderColor:clr.map(c=>c+'88'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(6,{backgroundColor:clr.map(c=>c+'55'),borderColor:clr.map(c=>c+'77'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(7,{backgroundColor:clr.map(c=>c+'44'),borderColor:clr.map(c=>c+'66'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}(${parseInt(c.dataset.label)*5}영업일)×${(7/parseInt(c.dataset.label)).toFixed(2)}: ${fmt(c.raw)} (7주환산)`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},callback:v=>v+'%'}}}}
+  });
+  const top6=new Set(sorted.slice(0,6).map(e=>e.code));
+  const allDates=[...new Set(d.etfs.flatMap(e=>e.trend.map(p=>p.d)))].sort();
+  const trendDs=d.etfs.map(e=>{const m=Object.fromEntries(e.trend.map(p=>[p.d,p.idx]));const isTop=top6.has(e.code);
+      return{label:e.short,data:allDates.map(dt=>dt in m?m[dt]:null),borderColor:e.color,backgroundColor:'transparent',
+        borderWidth:isTop?2.6:1.1,borderDash:isTop?[]:[4,3],pointRadius:0,pointHoverRadius:4,
+        tension:0.3,fill:false,spanGaps:false,order:isTop?0:1};});
+  if(charts.trend)charts.trend.destroy();
+  charts.trend=new Chart(document.getElementById('chartTrend'),{type:'line',
+    data:{labels:allDates,datasets:trendDs},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw!=null?c.raw.toFixed(1):'–'}`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:30,autoSkip:true,maxTicksLimit:10}},
+              y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},callback:v=>v.toFixed(0)},title:{display:true,text:'지수 (시작=100)',font:{size:10},color:'#9ca3af'}}}}
+  });
+  document.getElementById('legend').innerHTML=sorted.map((e,i)=>{const t=i<6;return `<span><span style="display:inline-block;width:22px;${t?`height:3px;background:${e.color}`:`height:0;border-top:2px dashed ${e.color}`};border-radius:2px;margin-right:4px;vertical-align:middle"></span>${e.short}</span>`;}).join('');
+
+  // 랭킹 표
+  const rk=['r1','r2','r3','','','','','','','',''];
+  document.getElementById('tbl').innerHTML=`<thead><tr>
+    <th style="width:30px">#</th><th style="width:54px">코드</th><th>종목명</th>
+    <th class="r key" style="width:72px">모멘텀 ★</th>
+    <th class="r" style="width:54px">2주</th><th class="r" style="width:54px">4주</th>
+    <th class="r" style="width:54px">6주</th><th class="r" style="width:54px">8주</th><th class="r" style="width:56px">10주</th>
+    <th class="r" style="width:82px">현재가</th>
+  </tr></thead><tbody>${sorted.map((e,i)=>`<tr>
+    <td><span class="rk ${rk[i]}">${i+1}</span></td>
+    <td style="font-weight:600;font-family:var(--mono);font-size:11px">${e.code}</td>
+    <td style="font-size:11px;color:var(--t2)" title="${e.name}">${e.name}${e.new?' <span style="color:#b45309;font-weight:700">·NEW</span>':''}</td>
+    <td class="r key" style="color:${cc(e.mom)}">${momFmt(e.mom)}</td>
+    <td class="r" style="color:${cc(e.r2)}">${fmt(e.r2)}</td>
+    <td class="r" style="color:${cc(e.r4)}">${fmt(e.r4)}</td>
+    <td class="r" style="color:${cc(e.r6)}">${fmt(e.r6)}</td>
+    <td class="r" style="color:${cc(e.r8)}">${fmt(e.r8)}</td>
+    <td class="r" style="color:${cc(e.r10)}">${fmt(e.r10)}</td>
+    <td class="r" style="color:var(--t2)">${won(e.cur)}</td>
+  </tr>`).join('')}</tbody>`;
+
+  document.getElementById('foot').innerHTML=`N주 = 지난 5×N 영업일 (일봉, 최신 종가 포함) · 모멘텀 지수 = (2주·5 + 4주·4 + 6주·3 + 8주·2 + 10주·1) ÷ 가중치합 · 자료 3개 이상만 산출, 3개 미만은 맨 오른쪽 표시<br>출처: 네이버(fchart 일봉) · KRW · 기준일 ${d.date} · 추세: 최근 50영업일 일별, 표시 시작=100(상위6 실선/하위6 점선) · 투자 참고용 — 실제 투자 전 공식 출처를 반드시 확인하세요.`;
+  document.getElementById('loadBox').style.display='none';
+  document.getElementById('dash').style.display='block';
+}
+async function init(){
+  try{
+    const r=await fetch('./kr-weekly-data.json?t='+Date.now());
+    if(!r.ok)throw new Error('data.json 없음');
+    render(await r.json());
+    setBadge('b-live','Live');
+  }catch(e){
+    document.getElementById('loadBox').innerHTML=`<div style="font-size:22px;color:#ca8a04;margin-bottom:10px">⏳</div><div style="font-size:13px;margin-bottom:8px">데이터 준비 중</div><div style="font-size:12px;color:var(--t2)">Actions 탭 → Update KR ETF Weekly → Run workflow</div>`;
+    setBadge('b-err','No data');
+  }
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

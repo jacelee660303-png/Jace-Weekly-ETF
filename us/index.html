@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>미국 ETF Weekly</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f5f4f0;--card:#fff;--bd:rgba(0,0,0,0.09);--tx:#1a1a1a;--t2:#666;--t3:#999;--acc:#1e40af;--mono:'SF Mono','Courier New',monospace}
+body{font-family:-apple-system,'Segoe UI','Malgun Gothic',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;padding:28px 22px}
+.wrap{max-width:1040px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--bd)}
+.hdr h1{font-size:20px;font-weight:600}.hdr p{font-size:12px;color:var(--t2);font-family:var(--mono);margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-family:var(--mono)}
+.b-live{background:#dcfce7;color:#16a34a}.b-load{background:#fef9c3;color:#ca8a04}.b-err{background:#fee2e2;color:#dc2626}
+.info-bar{display:flex;justify-content:space-between;padding:8px 13px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:7px;font-size:12px;color:var(--acc);margin-bottom:14px;flex-wrap:wrap;gap:6px}
+.summary-row{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:16px}
+.scard{background:var(--card);border:1px solid var(--bd);border-radius:9px;padding:10px 10px;border-top:3px solid #ddd}
+.scard-name{font-size:11px;font-weight:700;font-family:var(--mono);margin-bottom:1px}
+.scard-sub{font-size:8px;color:var(--t3);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scard-1w{font-size:17px;font-weight:700;font-family:var(--mono);line-height:1.1}
+.scard-rows{margin-top:4px;display:flex;flex-direction:column;gap:1px}
+.scard-row{font-size:9px;color:var(--t3);display:flex;justify-content:space-between}
+.scard-row span:last-child{font-weight:600}
+.ch-card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px 20px;margin-bottom:14px}
+.ch-title{font-size:12px;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ch-badge{padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700}
+.main-badge{background:var(--acc);color:#fff}.ref-badge{background:#f3f4f6;color:var(--t2)}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--t2);margin-top:10px}
+.tbl-wrap{background:var(--card);border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:12px}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{padding:8px 8px;font-size:10px;color:var(--t3);font-weight:500;background:#fafaf8;border-bottom:1px solid var(--bd);text-align:left}
+th.r{text-align:right}th.key{color:var(--acc);font-weight:700;font-size:11px}
+td{padding:9px 8px;font-size:12px;border-bottom:1px solid #f0f0ec}
+td.r{text-align:right;font-family:var(--mono);font-size:11px;font-weight:600}
+td.key{background:#eff6ff}
+tr:last-child td{border-bottom:none}tr:hover td{background:#fafaf8}tr:hover td.key{background:#dbeafe}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:21px;height:21px;border-radius:50%;font-size:10px;font-family:var(--mono);font-weight:700;background:#f0f0ec;color:var(--t2)}
+.r1{background:#fef3c7;color:#92400e}.r2{background:#f3f4f6;color:#4b5563}.r3{background:#fde8d8;color:#7c2d12}
+#loadBox{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:50px 20px;text-align:center;color:var(--t2)}
+.spin{width:28px;height:28px;border:2.5px solid #e5e7eb;border-top-color:var(--acc);border-radius:50%;animation:rot .8s linear infinite;margin:0 auto 12px}
+@keyframes rot{to{transform:rotate(360deg)}}
+footer{font-size:10px;color:var(--t3);text-align:center;line-height:1.8;padding-top:4px}
+@media(max-width:760px){.summary-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div><h1>미국 ETF Weekly</h1><p id="period">불러오는 중...</p></div>
+    <div><span class="badge b-load" id="badge">● Loading</span></div>
+  </div>
+  <div class="info-bar">
+    <span>📊 QQQ · SOXX · DRAM · EWY · GLD · IEF · MSTR | USD | Yahoo Finance</span>
+    <span style="color:var(--t2)">N주 = 지난 5×N 영업일 · 매일 미국 장 마감 후 자동 업데이트</span>
+  </div>
+  <div id="loadBox"><div class="spin"></div><div style="font-size:13px">데이터 로딩 중...</div></div>
+  <div id="dash" style="display:none">
+    <div class="summary-row" id="summaryRow"></div>
+    <div class="ch-card">
+      <div class="ch-title">
+        <span class="ch-badge main-badge">MAIN</span>
+        <strong>1주★</strong> 순 정렬 · 1~7주 수익률 (1주=5영업일 … 7주=35영업일)
+        <div style="margin-left:auto;display:flex;gap:8px;font-size:11px;color:var(--t2);flex-wrap:wrap">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#555;border:2px solid #333;margin-right:3px;vertical-align:middle;border-radius:2px"></span>1주★</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#888;opacity:.8;margin-right:3px;vertical-align:middle;border-radius:2px"></span>2주</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#999;opacity:.65;margin-right:3px;vertical-align:middle;border-radius:2px"></span>3주</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.55;margin-right:3px;vertical-align:middle;border-radius:2px"></span>4주</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.4;margin-right:3px;vertical-align:middle;border-radius:2px"></span>5·6·7주</span>
+        </div>
+      </div>
+      <div style="position:relative;height:300px"><canvas id="chartMain"></canvas></div>
+    </div>
+    <div class="ch-card">
+      <div class="ch-title">
+        <span class="ch-badge" style="background:#0e7490;color:#fff">추이7</span>
+        <strong>7주 환산 페이스</strong> · 각 구간을 7주 속도로 환산 · 왼쪽(단기)이 높으면 가속, 낮으면 감속
+        <div style="margin-left:auto;display:flex;gap:7px;font-size:11px;color:var(--t2);flex-wrap:wrap">
+          <span><span style="display:inline-block;width:10px;height:10px;background:#777;opacity:.95;margin-right:3px;vertical-align:middle;border-radius:2px"></span>1주×7</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#888;opacity:.8;margin-right:3px;vertical-align:middle;border-radius:2px"></span>2주×3.5</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#999;opacity:.66;margin-right:3px;vertical-align:middle;border-radius:2px"></span>3주×2.3</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.53;margin-right:3px;vertical-align:middle;border-radius:2px"></span>4주×1.75</span>
+          <span><span style="display:inline-block;width:10px;height:10px;background:#aaa;opacity:.4;margin-right:3px;vertical-align:middle;border-radius:2px"></span>5·6·7주</span>
+        </div>
+      </div>
+      <div style="position:relative;height:300px"><canvas id="chartPace7"></canvas></div>
+    </div>
+    <div class="ch-card">
+      <div class="ch-title">
+        <span class="ch-badge ref-badge">TREND</span>
+        35영업일(7주) 상대성과
+        <span style="color:var(--t3);font-size:11px">표시 시작 = 100 · 일별</span>
+      </div>
+      <div style="position:relative;height:260px"><canvas id="chartTrend"></canvas></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="tbl-wrap"><table id="tbl"></table></div>
+  </div>
+  <footer id="foot"></footer>
+</div>
+<script>
+const charts={};
+const fmt=r=>(r==null||isNaN(r))?'–':(r>=0?'+':'')+parseFloat(r).toFixed(1)+'%';
+const cc=v=>(v==null||isNaN(v))?'#9ca3af':(v>=0?'#16a34a':'#dc2626');
+const setBadge=(cls,t)=>{const b=document.getElementById('badge');b.className='badge '+cls;b.textContent='● '+t;};
+function render(d){
+  // 정렬: 1주 수익률 내림차순
+  const sorted=[...d.etfs].sort((a,b)=>{if(a.r1==null)return 1;if(b.r1==null)return-1;return b.r1-a.r1;});
+  // ── 날짜 표시: 이곳 한 줄로 통일 ──
+  document.getElementById('period').textContent=`USD 기준 · 기준일: ${d.date} · 업데이트: ${d.generated_at}`;
+
+  // 요약 카드 (대표=1주★, 보조=2~7주)
+  document.getElementById('summaryRow').innerHTML=sorted.map(e=>`
+    <div class="scard" style="border-top-color:${e.color}">
+      <div class="scard-name">${e.ticker}</div>
+      <div class="scard-sub">${e.name}</div>
+      <div style="font-size:8px;color:var(--t3);font-family:var(--mono);letter-spacing:.4px">1주★</div>
+      <div class="scard-1w" style="color:${cc(e.r1)}">${fmt(e.r1)}</div>
+      <div class="scard-rows">
+        ${[2,3,4,5,6,7].map(w=>`<div class="scard-row"><span>${w}주</span><span style="color:${cc(e['r'+w])}">${fmt(e['r'+w])}</span></div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  const clr=sorted.map(e=>e.color);
+  const ds=(wk,style)=>({label:wk+'주',data:sorted.map(e=>e['r'+wk]),...style});
+
+  // MAIN: 1~7주 막대 (1주 강조)
+  if(charts.main)charts.main.destroy();
+  charts.main=new Chart(document.getElementById('chartMain'),{type:'bar',
+    data:{labels:sorted.map(e=>e.ticker),datasets:[
+      ds(1,{backgroundColor:clr.map(c=>c+'ee'),borderColor:clr,borderWidth:2,borderRadius:4,borderSkipped:false}),
+      ds(2,{backgroundColor:clr.map(c=>c+'cc'),borderColor:clr.map(c=>c+'dd'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(3,{backgroundColor:clr.map(c=>c+'aa'),borderColor:clr.map(c=>c+'bb'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(4,{backgroundColor:clr.map(c=>c+'88'),borderColor:clr.map(c=>c+'99'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(5,{backgroundColor:clr.map(c=>c+'66'),borderColor:clr.map(c=>c+'88'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(6,{backgroundColor:clr.map(c=>c+'55'),borderColor:clr.map(c=>c+'77'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      ds(7,{backgroundColor:clr.map(c=>c+'44'),borderColor:clr.map(c=>c+'66'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.raw)}`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},callback:v=>v+'%'}}}}
+  });
+
+  // 7주 환산 페이스: rN × (7/N)
+  const dsP7=(n,style)=>({label:n+'주',data:sorted.map(e=>e['r'+n]!=null?+(e['r'+n]*(7/n)).toFixed(1):null),...style});
+  if(charts.pace7)charts.pace7.destroy();
+  charts.pace7=new Chart(document.getElementById('chartPace7'),{type:'bar',
+    data:{labels:sorted.map(e=>e.ticker),datasets:[
+      dsP7(1,{backgroundColor:clr.map(c=>c+'ee'),borderColor:clr,borderWidth:2,borderRadius:4,borderSkipped:false}),
+      dsP7(2,{backgroundColor:clr.map(c=>c+'cc'),borderColor:clr.map(c=>c+'dd'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(3,{backgroundColor:clr.map(c=>c+'aa'),borderColor:clr.map(c=>c+'bb'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(4,{backgroundColor:clr.map(c=>c+'88'),borderColor:clr.map(c=>c+'99'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(5,{backgroundColor:clr.map(c=>c+'66'),borderColor:clr.map(c=>c+'88'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(6,{backgroundColor:clr.map(c=>c+'55'),borderColor:clr.map(c=>c+'77'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+      dsP7(7,{backgroundColor:clr.map(c=>c+'44'),borderColor:clr.map(c=>c+'66'),borderWidth:1,borderRadius:3,borderSkipped:false}),
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}×${(7/parseInt(c.dataset.label)).toFixed(2)}: ${fmt(c.raw)} (7주환산)`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},callback:v=>v+'%'}}}}
+  });
+
+  // TREND: 35영업일 일별 상대성과
+  const allDates=[...new Set(d.etfs.flatMap(e=>e.trend.map(p=>p.d)))].sort();
+  const top4=new Set(sorted.slice(0,4).map(e=>e.ticker));
+  if(charts.trend)charts.trend.destroy();
+  charts.trend=new Chart(document.getElementById('chartTrend'),{type:'line',
+    data:{labels:allDates,datasets:sorted.map(e=>{const m=Object.fromEntries(e.trend.map(p=>[p.d,p.idx]));const isTop=top4.has(e.ticker);
+      return{label:e.ticker,data:allDates.map(dt=>dt in m?m[dt]:null),borderColor:e.color,backgroundColor:'transparent',
+        borderWidth:isTop?2.6:1.1,borderDash:isTop?[]:[4,3],pointRadius:0,pointHoverRadius:5,
+        tension:0.3,fill:false,spanGaps:true,order:isTop?0:1};})},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.raw!=null?c.raw.toFixed(1):'–'}`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10},maxRotation:30,autoSkip:true,maxTicksLimit:8}},
+              y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:11},callback:v=>v.toFixed(0)},title:{display:true,text:'지수 (시작=100)',font:{size:10},color:'#9ca3af'}}}}
+  });
+  document.getElementById('legend').innerHTML=sorted.map((e,i)=>{const t=i<4;return `<span><span style="display:inline-block;width:22px;${t?`height:3px;background:${e.color}`:`height:0;border-top:2px dashed ${e.color}`};border-radius:2px;margin-right:4px;vertical-align:middle"></span>${e.ticker}</span>`;}).join('');
+
+  // 랭킹 표
+  const rk=['r1','r2','r3','','','',''];
+  document.getElementById('tbl').innerHTML=`<thead><tr>
+    <th style="width:30px">#</th><th style="width:56px">Ticker</th><th>Name</th>
+    <th class="r key" style="width:62px">1주 ★</th>
+    ${[2,3,4,5,6,7].map(w=>`<th class="r" style="width:54px">${w}주</th>`).join('')}
+    <th class="r" style="width:78px">현재가</th>
+  </tr></thead><tbody>${sorted.map((e,i)=>`<tr>
+    <td><span class="rk ${rk[i]}">${i+1}</span></td>
+    <td style="font-weight:600;font-family:var(--mono)">${e.ticker}</td>
+    <td style="font-size:11px;color:var(--t2)">${e.name}</td>
+    <td class="r key" style="color:${cc(e.r1)}">${fmt(e.r1)}</td>
+    ${[2,3,4,5,6,7].map(w=>`<td class="r" style="color:${cc(e['r'+w])}">${fmt(e['r'+w])}</td>`).join('')}
+    <td class="r" style="color:var(--t2)">${e.cur!=null?'$'+e.cur.toFixed(2):'–'}</td>
+  </tr>`).join('')}</tbody>`;
+
+  document.getElementById('foot').innerHTML=`N주 수익률 = 최신 종가 ÷ 5×N 영업일 전 종가 − 1 · 7주 환산 = N주 수익률 × (7/N)<br>Source: Yahoo Finance · USD · 투자 참고용 — 실제 투자 전 공식 출처를 반드시 확인하시기 바랍니다.`;
+  document.getElementById('loadBox').style.display='none';
+  document.getElementById('dash').style.display='block';
+}
+async function init(){
+  try{
+    const r=await fetch('./data.json?t='+Date.now());
+    if(!r.ok)throw new Error('data.json 없음');
+    render(await r.json());
+    setBadge('b-live','Live');
+  }catch(e){
+    document.getElementById('loadBox').innerHTML=`<div style="font-size:22px;color:#ca8a04;margin-bottom:10px">⏳</div><div style="font-size:13px;margin-bottom:8px">데이터 준비 중</div><div style="font-size:12px;color:var(--t2)">Actions 탭 → Update US ETF Weekly → Run workflow</div>`;
+    setBadge('b-err','No data');
+  }
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

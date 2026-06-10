@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="refresh" content="3600">
+<title>나스닥100 시그널 리포트</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',sans-serif;font-size:14px;padding:16px;max-width:900px;margin:0 auto}
+  h1{font-size:1.4rem;margin-bottom:4px}
+  h2{font-size:1rem;color:#8b949e;margin:20px 0 8px;border-bottom:1px solid #21262d;padding-bottom:5px;display:flex;align-items:center;gap:8px}
+  .card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:16px;margin-bottom:14px}
+  .cash-box{background:gold18;border:2px solid gold;border-radius:12px;padding:20px;text-align:center;margin-bottom:16px}
+  .cash-pct{font-size:2.8rem;font-weight:800;color:gold}
+  .cash-label{font-size:1.1rem;margin-top:4px;color:gold}
+  table{width:100%;border-collapse:collapse}
+  td{border-bottom:1px solid #21262d;vertical-align:middle}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .metric{background:#161b22;border:1px solid #21262d;border-radius:8px;padding:12px}
+  .metric-label{color:#8b949e;font-size:0.8rem;margin-bottom:3px}
+  .metric-value{font-size:1.2rem;font-weight:700}
+  .ts{color:#8b949e;font-size:0.78rem;margin-top:3px}
+  .bar-bg{background:#21262d;border-radius:4px;height:8px;margin-top:5px}
+  .bar{background:#e74c3c;border-radius:4px;height:8px;width:77.4%}
+  .badge{display:inline-block;background:#21262d;border-radius:4px;padding:1px 7px;font-size:0.75rem;color:#8b949e}
+  .ma-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .ma-chip{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:4px 10px;font-size:0.8rem;text-align:center}
+  .refresh-btn{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:4px 12px;cursor:pointer;font-size:0.8rem}
+  .refresh-btn:hover{background:#30363d}
+  @media(max-width:600px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+ 
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+    <div>
+      <h1>📊 나스닥100 현금전환 시그널 리포트</h1>
+      <p class="ts">스크립트 실행: 2026-06-07 13:39 KST &nbsp;|&nbsp; 데이터 기준: 직전 영업일 종가</p>
+    </div>
+    <button class="refresh-btn" onclick="location.reload()">🔄 새로고침</button>
+  </div>
+</div>
+ 
+<div class="cash-box">
+  <div style="font-size:0.9rem;color:#8b949e;margin-bottom:6px">▣ 권고 현금 비중</div>
+  <div class="cash-pct">25%</div>
+  <div class="cash-label">🟡 현금 25% 확보 권고</div>
+</div>
+ 
+<!-- ① 4대 시그널 -->
+<h2>① VAA / DAA / HAA 4대 카나리아 시그널</h2>
+ 
+<!-- 추세 -->
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <strong>추세 (Trend)</strong>
+    <span>✅ 200일선 위 (안전)</span>
+  </div>
+  <div style="color:#ccc;margin-bottom:6px">
+    QQQ 현재가 <strong style="color:#e6edf3">$705.1</strong>
+    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-06-05 기준)</span>
+  </div>
+  <div class="ma-grid">
+    <div class="ma-chip">
+      <div style="color:#8b949e">20일선</div>
+      <div>$722.0</div>
+      <div><span style='color:#e74c3c'>▼2.3%</span></div>
+    </div>
+    <div class="ma-chip">
+      <div style="color:#8b949e">50일선</div>
+      <div>$667.8</div>
+      <div><span style='color:#2ecc71'>▲5.6%</span></div>
+    </div>
+    <div class="ma-chip">
+      <div style="color:#8b949e">120일선</div>
+      <div>$634.4</div>
+      <div><span style='color:#2ecc71'>▲11.1%</span></div>
+    </div>
+    <div class="ma-chip" style="border-color:#2ecc71">
+      <div style="color:#8b949e">200일선 ★</div>
+      <div>$620.9</div>
+      <div><span style='color:#2ecc71'>▲13.6%</span></div>
+    </div>
+  </div>
+</div>
+ 
+<!-- VAA -->
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <strong>속도 (VAA)</strong>
+    <span>✅ 모멘텀 양호 (+144.0)</span>
+  </div>
+  <div style="color:#ccc;margin-bottom:8px">
+    모멘텀 스코어 <strong style="color:#2ecc71;font-size:1.1rem">144.0</strong>
+    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-06-05 기준)</span>
+    &nbsp;<span style="color:#8b949e;font-size:0.78rem">(공식: 12x1M + 4x3M + 2x6M + 1x12M)</span>
+  </div>
+  <table style="font-size:0.85rem">
+    <tr style="color:#8b949e"><td style="padding:4px 10px">기간</td><td style="padding:4px 10px">수익률</td><td style="padding:4px 10px">가중치</td><td style="padding:4px 10px">기여도</td></tr>
+    <tr>
+          <td style='padding:5px 10px'>1M</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲1.5%</span></td>
+          <td style='padding:5px 10px;color:#8b949e'>x12</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲18.0%</span></td>
+        </tr>
+    <tr>
+          <td style='padding:5px 10px'>3M</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲16.2%</span></td>
+          <td style='padding:5px 10px;color:#8b949e'>x4</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲64.8%</span></td>
+        </tr>
+    <tr>
+          <td style='padding:5px 10px'>6M</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲13.5%</span></td>
+          <td style='padding:5px 10px;color:#8b949e'>x2</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲27.0%</span></td>
+        </tr>
+    <tr>
+          <td style='padding:5px 10px'>12M</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲35.0%</span></td>
+          <td style='padding:5px 10px;color:#8b949e'>x1</td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲35.0%</span></td>
+        </tr>
+  </table>
+</div>
+ 
+<!-- DAA -->
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <strong>심리 (DAA 카나리아)</strong>
+    <span>🚨 카나리아 경고 (50% 현금화)</span>
+  </div>
+  <table style="font-size:0.85rem">
+    <tr>
+      <td style="padding:6px 10px;color:#8b949e">VWO (신흥국)</td>
+      <td style="padding:6px 10px"><span style='color:#e74c3c'>▼3.6%</span> <span style="color:#555;font-size:0.75rem">(21일 수익률)</span></td>
+      <td style="padding:6px 10px"><span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-06-05 기준)</span></td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px;color:#8b949e">BND (채권)</td>
+      <td style="padding:6px 10px"><span style='color:#e74c3c'>▼0.4%</span> <span style="color:#555;font-size:0.75rem">(21일 수익률)</span></td>
+      <td style="padding:6px 10px"><span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-06-05 기준)</span></td>
+    </tr>
+  </table>
+</div>
+ 
+<!-- HAA -->
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <strong>매크로 (HAA)</strong>
+    <span>✅ TIP 이평선 위 (안전)</span>
+  </div>
+  <div style="color:#ccc;font-size:0.85rem">
+    TIP 현재가 <strong>$109.2</strong> &nbsp;/&nbsp;
+    12개월 이평 <strong>$108.2</strong>
+    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-06-05 기준)</span>
+  </div>
+</div>
+ 
+<!-- ② TIGER ETF -->
+<h2>② TIGER 미국나스닥100 (133690) 기술지표 <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-06-05 기준)</span></h2>
+<div class="grid2">
+  <div class="metric">
+    <div class="metric-label">현재가 (직전 영업일 종가)</div>
+    <div class="metric-value">₩205,500.0</div>
+    <div class="ts">20일선 ₩196,226.0 &nbsp;/&nbsp; 60일선 ₩176,281.1</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">RSI (14일)</div>
+    <div class="metric-value" style="color:#e74c3c">77.4</div>
+    <div class="bar-bg"><div class="bar"></div></div>
+    <div class="ts">⚠️ 과매수 (>70) &nbsp;|&nbsp; 30↓과매도 / 70↑과매수</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">MACD (12/26/9)</div>
+    <div class="metric-value" style="color:#2ecc71">7,266.7</div>
+    <div class="ts">Signal: 7,051.3 &nbsp;/&nbsp; Histogram: 215.4 → 상승 ▲</div>
+  </div>
+  <div class="metric">
+    <div class="metric-label">VIX 공포지수 <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-06-05 기준)</span></div>
+    <div class="metric-value" style="color:#f0a500">21.5</div>
+    <div class="ts">🟠 공포 구간 (>20)</div>
+  </div>
+</div>
+ 
+<!-- ③ CNN -->
+<h2>③ CNN 공포탐욕지수 <span style="font-size:0.8rem;color:#555">(실시간)</span></h2>
+<div class="card" style="text-align:center">
+  <div style="font-size:2.2rem;font-weight:800;color:#f0a500"><span style='color:#555'>N/A</span></div>
+  <div style="margin-top:4px;color:#8b949e;text-transform:uppercase">N/A</div>
+  <div style="margin:10px 0 4px;background:#21262d;border-radius:6px;height:10px;position:relative">
+    <div style="background:linear-gradient(90deg,#e74c3c,#f0a500,#2ecc71);border-radius:6px;height:10px"></div>
+    <div style="position:absolute;top:-4px;left:50%;transform:translateX(-50%)">
+      <div style="width:4px;height:18px;background:#fff;border-radius:2px;margin:0 auto"></div>
+    </div>
+  </div>
+  <div style="display:flex;justify-content:space-between;color:#555;font-size:0.75rem;margin-top:2px">
+    <span>극도의 공포</span><span>중립</span><span>극도의 탐욕</span>
+  </div>
+</div>
+ 
+<!-- ④ 운용 규칙 -->
+<h2>④ 단계별 현금화 운용 규칙</h2>
+<div class="card">
+<table style="font-size:0.85rem">
+  <tr style="background:#1a2a1a">
+    <td style="padding:8px 12px;font-weight:600;color:#2ecc71;white-space:nowrap">복귀 조건</td>
+    <td style="padding:8px 12px;color:#ccc">모든 시그널 플러스 전환 + QQQ 이평선 상향 안착 확인</td>
+  </tr>
+  <tr style="background:#2a2a1a">
+    <td style="padding:8px 12px;font-weight:600;color:#f0a500;white-space:nowrap">1단계 (50% 현금)</td>
+    <td style="padding:8px 12px;color:#ccc">DAA 카나리아 경고 또는 QQQ 50일선 이탈</td>
+  </tr>
+  <tr style="background:#2a1a1a">
+    <td style="padding:8px 12px;font-weight:600;color:#e74c3c;white-space:nowrap">2단계 (100% 현금)</td>
+    <td style="padding:8px 12px;color:#ccc">QQQ 200일선 이탈 또는 VAA 모멘텀 마이너스 전환</td>
+  </tr>
+</table>
+</div>
+ 
+<p style="color:#555;font-size:0.75rem;text-align:center;margin-top:16px;line-height:1.8">
+  ※ Python 수집: 2026-06-07 13:39 KST &nbsp;|&nbsp; 데이터: Yahoo Finance (직전 영업일 종가), CNN<br>
+  ※ 본 리포트는 투자 참고용이며 최종 투자 결정은 본인 책임입니다.
+</p>
+ 
+</body>
+</html>
