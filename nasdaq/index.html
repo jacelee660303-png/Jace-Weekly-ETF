@@ -11,9 +11,9 @@
   h1{font-size:1.4rem;margin-bottom:4px}
   h2{font-size:1rem;color:#8b949e;margin:20px 0 8px;border-bottom:1px solid #21262d;padding-bottom:5px;display:flex;align-items:center;gap:8px}
   .card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:16px;margin-bottom:14px}
-  .cash-box{background:gold18;border:2px solid gold;border-radius:12px;padding:20px;text-align:center;margin-bottom:16px}
-  .cash-pct{font-size:2.8rem;font-weight:800;color:gold}
-  .cash-label{font-size:1.1rem;margin-top:4px;color:gold}
+  .cash-box{background:orange18;border:2px solid orange;border-radius:12px;padding:20px;text-align:center;margin-bottom:16px}
+  .cash-pct{font-size:2.8rem;font-weight:800;color:orange}
+  .cash-label{font-size:1.1rem;margin-top:4px;color:orange}
   table{width:100%;border-collapse:collapse}
   td{border-bottom:1px solid #21262d;vertical-align:middle}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -22,7 +22,7 @@
   .metric-value{font-size:1.2rem;font-weight:700}
   .ts{color:#8b949e;font-size:0.78rem;margin-top:3px}
   .bar-bg{background:#21262d;border-radius:4px;height:8px;margin-top:5px}
-  .bar{background:#f0a500;border-radius:4px;height:8px;width:44.2%}
+  .bar{background:#2ecc71;border-radius:4px;height:8px;width:24.0%}
   .badge{display:inline-block;background:#21262d;border-radius:4px;padding:1px 7px;font-size:0.75rem;color:#8b949e}
   .ma-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
   .ma-chip{background:#0d1117;border:1px solid #21262d;border-radius:6px;padding:4px 10px;font-size:0.8rem;text-align:center}
@@ -37,7 +37,7 @@
   <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
     <div>
       <h1>📊 나스닥100 현금전환 시그널 리포트</h1>
-      <p class="ts">스크립트 실행: 2026-07-19 11:09 KST &nbsp;|&nbsp; 데이터 기준: 직전 영업일 종가</p>
+      <p class="ts">스크립트 실행: 2026-07-26 11:13 KST &nbsp;|&nbsp; 데이터 기준: 직전 영업일 종가</p>
     </div>
     <button class="refresh-btn" onclick="location.reload()">🔄 새로고침</button>
   </div>
@@ -45,8 +45,8 @@
  
 <div class="cash-box">
   <div style="font-size:0.9rem;color:#8b949e;margin-bottom:6px">▣ 권고 현금 비중</div>
-  <div class="cash-pct">25%</div>
-  <div class="cash-label">🟡 현금 25% 확보 권고</div>
+  <div class="cash-pct">50%</div>
+  <div class="cash-label">🟠 현금 50% 확보 권고</div>
 </div>
  
 <!-- ① 4대 시그널 -->
@@ -59,29 +59,29 @@
     <span>✅ 200일선 위 (안전)</span>
   </div>
   <div style="color:#ccc;margin-bottom:6px">
-    QQQ 현재가 <strong style="color:#e6edf3">$695.3</strong>
-    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-17 기준)</span>
+    QQQ 현재가 <strong style="color:#e6edf3">$692.0</strong>
+    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-23 기준)</span>
   </div>
   <div class="ma-grid">
     <div class="ma-chip">
       <div style="color:#8b949e">20일선</div>
-      <div>$718.3</div>
-      <div><span style='color:#e74c3c'>▼3.2%</span></div>
+      <div>$713.3</div>
+      <div><span style='color:#e74c3c'>▼3.0%</span></div>
     </div>
     <div class="ma-chip">
       <div style="color:#8b949e">50일선</div>
-      <div>$718.5</div>
-      <div><span style='color:#e74c3c'>▼3.2%</span></div>
+      <div>$718.3</div>
+      <div><span style='color:#e74c3c'>▼3.7%</span></div>
     </div>
     <div class="ma-chip">
       <div style="color:#8b949e">120일선</div>
-      <div>$657.4</div>
-      <div><span style='color:#2ecc71'>▲5.8%</span></div>
+      <div>$659.8</div>
+      <div><span style='color:#2ecc71'>▲4.9%</span></div>
     </div>
     <div class="ma-chip" style="border-color:#2ecc71">
       <div style="color:#8b949e">200일선 ★</div>
-      <div>$639.5</div>
-      <div><span style='color:#2ecc71'>▲8.7%</span></div>
+      <div>$641.5</div>
+      <div><span style='color:#2ecc71'>▲7.9%</span></div>
     </div>
   </div>
 </div>
@@ -90,38 +90,38 @@
 <div class="card">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <strong>속도 (VAA)</strong>
-    <span>✅ 모멘텀 양호 (+33.8)</span>
+    <span>✅ 모멘텀 양호 (+40.6)</span>
   </div>
   <div style="color:#ccc;margin-bottom:8px">
-    모멘텀 스코어 <strong style="color:#2ecc71;font-size:1.1rem">33.8</strong>
-    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-17 기준)</span>
+    모멘텀 스코어 <strong style="color:#2ecc71;font-size:1.1rem">40.6</strong>
+    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-23 기준)</span>
     &nbsp;<span style="color:#8b949e;font-size:0.78rem">(공식: 12x1M + 4x3M + 2x6M + 1x12M)</span>
   </div>
   <table style="font-size:0.85rem">
     <tr style="color:#8b949e"><td style="padding:4px 10px">기간</td><td style="padding:4px 10px">수익률</td><td style="padding:4px 10px">가중치</td><td style="padding:4px 10px">기여도</td></tr>
     <tr>
           <td style='padding:5px 10px'>1M</td>
-          <td style='padding:5px 10px'><span style='color:#e74c3c'>▼3.7%</span></td>
+          <td style='padding:5px 10px'><span style='color:#e74c3c'>▼2.6%</span></td>
           <td style='padding:5px 10px;color:#8b949e'>x12</td>
-          <td style='padding:5px 10px'><span style='color:#e74c3c'>▼44.4%</span></td>
+          <td style='padding:5px 10px'><span style='color:#e74c3c'>▼31.2%</span></td>
         </tr>
     <tr>
           <td style='padding:5px 10px'>3M</td>
-          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲7.3%</span></td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲6.3%</span></td>
           <td style='padding:5px 10px;color:#8b949e'>x4</td>
-          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲29.2%</span></td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲25.2%</span></td>
         </tr>
     <tr>
           <td style='padding:5px 10px'>6M</td>
-          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲12.1%</span></td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲11.7%</span></td>
           <td style='padding:5px 10px;color:#8b949e'>x2</td>
-          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲24.2%</span></td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲23.4%</span></td>
         </tr>
     <tr>
           <td style='padding:5px 10px'>12M</td>
-          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲24.4%</span></td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲23.3%</span></td>
           <td style='padding:5px 10px;color:#8b949e'>x1</td>
-          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲24.4%</span></td>
+          <td style='padding:5px 10px'><span style='color:#2ecc71'>▲23.3%</span></td>
         </tr>
   </table>
 </div>
@@ -135,13 +135,13 @@
   <table style="font-size:0.85rem">
     <tr>
       <td style="padding:6px 10px;color:#8b949e">VWO (신흥국)</td>
-      <td style="padding:6px 10px"><span style='color:#e74c3c'>▼3.2%</span> <span style="color:#555;font-size:0.75rem">(21일 수익률)</span></td>
-      <td style="padding:6px 10px"><span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-17 기준)</span></td>
+      <td style="padding:6px 10px"><span style='color:#e74c3c'>▼1.5%</span> <span style="color:#555;font-size:0.75rem">(21일 수익률)</span></td>
+      <td style="padding:6px 10px"><span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-23 기준)</span></td>
     </tr>
     <tr>
       <td style="padding:6px 10px;color:#8b949e">BND (채권)</td>
-      <td style="padding:6px 10px"><span style='color:#e74c3c'>▼0.1%</span> <span style="color:#555;font-size:0.75rem">(21일 수익률)</span></td>
-      <td style="padding:6px 10px"><span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-17 기준)</span></td>
+      <td style="padding:6px 10px"><span style='color:#e74c3c'>▼1.4%</span> <span style="color:#555;font-size:0.75rem">(21일 수익률)</span></td>
+      <td style="padding:6px 10px"><span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-23 기준)</span></td>
     </tr>
   </table>
 </div>
@@ -150,37 +150,37 @@
 <div class="card">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
     <strong>매크로 (HAA)</strong>
-    <span>✅ TIP 이평선 위 (안전)</span>
+    <span>🚨 TIP 이평선 이탈</span>
   </div>
   <div style="color:#ccc;font-size:0.85rem">
-    TIP 현재가 <strong>$108.3</strong> &nbsp;/&nbsp;
+    TIP 현재가 <strong>$107.5</strong> &nbsp;/&nbsp;
     12개월 이평 <strong>$107.6</strong>
-    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-17 기준)</span>
+    <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-23 기준)</span>
   </div>
 </div>
  
 <!-- ② TIGER ETF -->
-<h2>② TIGER 미국나스닥100 (133690) 기술지표 <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-16 기준)</span></h2>
+<h2>② TIGER 미국나스닥100 (133690) 기술지표 <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-24 기준)</span></h2>
 <div class="grid2">
   <div class="metric">
     <div class="metric-label">현재가 (직전 영업일 종가)</div>
-    <div class="metric-value">₩193,610.0</div>
-    <div class="ts">20일선 ₩200,202.8 &nbsp;/&nbsp; 60일선 ₩194,536.5</div>
+    <div class="metric-value">₩184,355.0</div>
+    <div class="ts">20일선 ₩196,136.2 &nbsp;/&nbsp; 60일선 ₩195,603.7</div>
   </div>
   <div class="metric">
     <div class="metric-label">RSI (14일)</div>
-    <div class="metric-value" style="color:#f0a500">44.2</div>
+    <div class="metric-value" style="color:#2ecc71">24.0</div>
     <div class="bar-bg"><div class="bar"></div></div>
-    <div class="ts">중립 구간 &nbsp;|&nbsp; 30↓과매도 / 70↑과매수</div>
+    <div class="ts">✅ 과매도 (<30) &nbsp;|&nbsp; 30↓과매도 / 70↑과매수</div>
   </div>
   <div class="metric">
     <div class="metric-label">MACD (12/26/9)</div>
-    <div class="metric-value" style="color:#e74c3c">-868.6</div>
-    <div class="ts">Signal: 325.5 &nbsp;/&nbsp; Histogram: -1,194.1 → 하락 ▼</div>
+    <div class="metric-value" style="color:#e74c3c">-3,097.5</div>
+    <div class="ts">Signal: -1,561.2 &nbsp;/&nbsp; Histogram: -1,536.3 → 하락 ▼</div>
   </div>
   <div class="metric">
-    <div class="metric-label">VIX 공포지수 <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-17 기준)</span></div>
-    <div class="metric-value" style="color:#2ecc71">18.8</div>
+    <div class="metric-label">VIX 공포지수 <span style='font-size:0.75rem;color:#8b949e;margin-left:6px'>(2026-07-23 기준)</span></div>
+    <div class="metric-value" style="color:#2ecc71">18.7</div>
     <div class="ts">🟢 안정 구간</div>
   </div>
 </div>
@@ -221,7 +221,7 @@
 </div>
  
 <p style="color:#555;font-size:0.75rem;text-align:center;margin-top:16px;line-height:1.8">
-  ※ Python 수집: 2026-07-19 11:09 KST &nbsp;|&nbsp; 데이터: Yahoo Finance (직전 영업일 종가), CNN<br>
+  ※ Python 수집: 2026-07-26 11:13 KST &nbsp;|&nbsp; 데이터: Yahoo Finance (직전 영업일 종가), CNN<br>
   ※ 본 리포트는 투자 참고용이며 최종 투자 결정은 본인 책임입니다.
 </p>
  
